@@ -1,0 +1,12 @@
+- hosts: kubernetes
+  user: ubuntu
+
+  tasks:
+    - name: deploy sampleapp on kubernetes cluster
+      command: kubectl apply -f /home/ubuntu/manifests/deployment.yml --namespace="{{ ns }}"
+
+    - name: create service for sampleapp
+      command: kubectl apply -f /home/ubuntu/manifests/service.yml --namespace="{{ ns }}"
+
+    - name: update deployment with new pods if image updated in docker hub
+      command: kubectl rollout restart deployment.apps/addressbook --namespace="{{ ns }}"

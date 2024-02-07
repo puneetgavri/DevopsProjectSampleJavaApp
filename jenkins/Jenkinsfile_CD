@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+    stages {
+        stage('checkout') {
+	   steps {
+                echo 'compiling..'
+		git url: 'https://github.com/puneetgavri/DevopsProjectSampleJavaApp.git'
+           }
+        }
+	    stage('copy manisfests to k8s cluster') {
+	   steps {
+                echo 'copy manifest files to k8s master'
+		sshPublisher(publishers: [sshPublisherDesc(configName: 'k8s', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'manifests', remoteDirectorySDF: false, removePrefix: 'manifests/', sourceFiles: 'manifests/*')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+           }	
+        }
+		stage('copy playbook to ansible server') {
+	   steps {
+                echo 'copy playbooks to ansible server'
+		sshPublisher(publishers: [sshPublisherDesc(configName: 'ansible-server', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'ansible-playbook -e "ns=${Environment}" /home/ansible/warfiles/cd.yml', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'playbooks', remoteDirectorySDF: false, removePrefix: 'playbooks/', sourceFiles: 'playbooks/*')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+           }	
+        }
+		
+      }
+}
+
+
