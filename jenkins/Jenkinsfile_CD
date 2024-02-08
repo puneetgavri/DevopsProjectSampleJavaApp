@@ -16,7 +16,7 @@ pipeline {
 		stage('Trigger Deploy') {
 	   steps {
                 echo 'copy playbooks to ansible server'
-		sshPublisher(publishers: [sshPublisherDesc(configName: 'ansible-server', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'ansible-playbook -e "ns=${Environment}" /home/ansible/warfiles/cd.yml', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'playbooks', remoteDirectorySDF: false, removePrefix: 'playbooks/', sourceFiles: 'playbooks/*')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+		sshPublisher(publishers: [sshPublisherDesc(configName: 'ansible-server', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'ansible-playbook -e "ns=${Environment}" /home/ansible/playbooks/deploy-playbook.yml', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'playbooks', remoteDirectorySDF: false, removePrefix: 'playbooks/', sourceFiles: 'playbooks/*')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
            }	
         }
 		
