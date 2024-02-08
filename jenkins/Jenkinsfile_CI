@@ -52,14 +52,14 @@ pipeline {
         }
 		 stage("Build Docker Image") {
             steps{
-               sh "sudo docker build -t puneetgavri/sampleappimage:latest ."
+               sh "docker build -t puneetgavri/sampleappimage:latest ."
             }
         }
         
         stage("Docker Push"){
             steps{
-            sh 'echo $DOCKERHUB_CREDENTIALS_PSW | sudo docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-            sh "sudo docker push puneetgavri/sampleappimage:latest"
+            sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+            sh "docker push puneetgavri/sampleappimage:latest"
             }
         }
     }
