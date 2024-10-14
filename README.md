@@ -1,1 +1,3 @@
-Sample Java Applicaiton V4.6.8
+Sample Java Applicaiton
+
+![](https://github.com/puneetgavri/DevopsProjectSampleJavaApp/blob/master/CICD.png)
