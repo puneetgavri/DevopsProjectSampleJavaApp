@@ -1,8 +1,6 @@
 pipeline {
     agent any
-	 environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhubtoken')
-    }
+	 
     stages {
         stage('compile') {
 	   steps {
@@ -15,11 +13,6 @@ pipeline {
 	   steps {
                 echo 'codereview..'
 		sh script: '/opt/maven/bin/mvn -P metrics pmd:pmd'
-           }
-	   post {
-               success {
-		   recordIssues enabledForFailure: true, tool: pmdParser(pattern: '**/target/pmd.xml')
-               }
            }		
         }
         stage('unit-test') {
