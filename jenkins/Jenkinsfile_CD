@@ -12,11 +12,11 @@ pipeline {
 		git branch: 'terraform-eks', url: 'https://github.com/puneetgavri/DevopsProjectSampleJavaApp.git'
            }
         }
-        stage('Deploying Nginx Application') {
+        stage('Deploying Application') {
             steps{
                 script{
                     dir('manifests') {
-                        sh 'aws eks update-kubeconfig --name my-cluster'
+                        sh 'aws eks update-kubeconfig --name my-demo-cluster'
                         sh 'kubectl apply -f deployment.yml'
                         sh 'kubectl apply -f service.yml'
                     }
