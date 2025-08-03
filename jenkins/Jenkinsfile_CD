@@ -1,26 +1,27 @@
 pipeline {
     agent any
+    environment {
+        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+        AWS_DEFAULT_REGION = "ap-northeast-1"
+    }
     stages {
         stage('checkout') {
 	   steps {
                 echo 'compiling..'
-		git url: 'https://github.com/puneetgavri/DevopsProjectSampleJavaApp.git'
+		git branch: 'terraform-eks', url: 'https://github.com/puneetgavri/DevopsProjectSampleJavaApp.git'
            }
         }
-	    stage('copy manisfests to k8s cluster') {
-	   steps {
-                echo 'copy manifest files to k8s master'
-		sshPublisher(publishers: [sshPublisherDesc(configName: 'k8s', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'manifests', remoteDirectorySDF: false, removePrefix: 'manifests/', sourceFiles: 'manifests/*')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
-           }	
+        stage('Deploying Application') {
+            steps{
+                script{
+                    dir('manifests') {
+                        sh 'aws eks update-kubeconfig --name my-demo-cluster'
+                        sh 'kubectl apply -f deployment.yml'
+                        sh 'kubectl apply -f service.yml'
+                    }
+                }
+            }
         }
-		stage('Trigger Deploy') {
-	   steps {
-                echo 'copy playbooks to ansible server'
-		sshPublisher(publishers: [sshPublisherDesc(configName: 'ansible-server', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'ansible-playbook -e "ns=${Environment}" /home/ansible/playbooks/deploy-playbook.yml', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'playbooks', remoteDirectorySDF: false, removePrefix: 'playbooks/', sourceFiles: 'playbooks/*')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
-           }	
-        }
-		
-      }
+    }
 }
-
-
