@@ -21,7 +21,8 @@ pipeline {
             }
             post {
                success {
-		   recordIssues enabledForFailure: true, tool: pmdParser(pattern: '**/target/pmd.xml')
+				   recordIssues sourceCodeRetention: 'LAST_BUILD', tools: [pmdParser(pattern: '**/target/pmd.xml')]
+		  // recordIssues enabledForFailure: true, tool: pmdParser(pattern: '**/target/pmd.xml')
                }
            }	
         }
