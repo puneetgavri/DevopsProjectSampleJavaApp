@@ -16,6 +16,7 @@ pipeline {
             steps{
                 script{
                     dir('manifests') {
+                        sh 'source .bashrc'
                         sh 'aws eks update-kubeconfig --name test-demo-cluster'
                         sh 'kubectl apply -f deployment.yml'
                         sh 'kubectl apply -f service.yml'
